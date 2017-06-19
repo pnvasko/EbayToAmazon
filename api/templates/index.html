@@ -1,0 +1,125 @@
+{%- extends "base.html" %}
+{% block title %}API TEST{% endblock %}
+{% block content %}
+<div class="container bs-docs-container">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="col-lg-6">
+                <form id="upload" method="post" enctype="multipart/form-data">
+                    <div class="row">
+                        <h2>Upload ASIN code for scraping.</h2>
+                        <textarea id="asins" style="margin: 0px; width: 421px; height: 546px;">
+                            B0030FBSQ2; B00LO9XYLI
+                        </textarea>
+                    </div>
+                    <div class="row" style="margin-top: 5px; margin-bottom: 5px;">
+                        <div id="msg"></div>
+                    </div>
+                    <div class="row" style="margin-top: 20px; margin-bottom: 10px;">
+                        <button id="download" >Send</button>
+                    </div>
+                </form>
+            </div>
+            <div class="col-lg-6">
+                <h2>Scenario</h2>
+                <div class="row" style="margin-top: 5px; margin-bottom: 5px;"><span id="resstatus"></span></div>
+                <div class="row" style="margin-top: 5px; margin-bottom: 5px;"><button id="getresult" >Get result</button></div>
+                <div class="row" style="margin-top: 5px; margin-bottom: 5px;">
+                    <table class="table table-striped bg-white b-a">
+                        <thead>
+                            <tr>
+                                <th>id</th>
+                                <th>Tasks id</th>
+                                <th>Created</th>
+                                <th>Update</th>
+                                <th>Status</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody id="testresult"></tbody>
+                    </table>
+                </div>
+                <div id="resoutput">
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+{%- endblock %}
+{% block scripts %}
+    {{super()}}
+<script >
+    var text = null;
+
+    var clearhtml = function () {
+        $('#resstatus').html('');
+        $('#browsertype').html('');
+        $('#scenariourl').html('');
+        $('#testresult').html('');
+    };
+
+    $('#getresult').on('click', function () {
+        event.preventDefault();
+        clearhtml();
+        getresult();
+    });
+
+    var getresult = function () {
+        clearhtml();
+        $.ajax({
+            url: '/lastscenario',
+            type: 'GET',
+            success: function (res) {
+                $("#testresult").html("");
+                var scenarios = res.scenarios;
+                for (var i = 0; i < scenarios.length; i++) {
+                    var scenario = scenarios[i];
+                    var trdesc = "<tr><td>" + scenario.id + "</td><td>" + scenario.celerytask + "</td><td>" + scenario.created_at +  "</td><td>" + scenario.update_at + "</td><td>" + scenario.status +"</td></tr>";
+                    $("#testresult").append(trdesc);
+                }
+            },
+            error: function (res) {
+                $('#resstatus').html("Error get result: " + res);
+            }
+        });
+    };
+
+    $('#upload').submit(function(event) {
+        event.preventDefault();
+        var formdata = {
+          asins:  $('#asins').val() //asins.split(";")
+        };
+        formdata = JSON.stringify(formdata);
+        console.log(formdata);
+        $.ajax({
+            url:'/upload',
+            type: 'POST',
+            xhr: function() {
+                var myXhr = $.ajaxSettings.xhr();
+                return myXhr;
+            },
+            data: formdata,
+            cache: false,
+            contentType: "application/json; charset=utf-8",
+            success: function(res) {
+              if (res.error == 0){
+                console.log('OK:', res);
+                $('#msg').html("Upload scenario id #" + res.scenario.id + "; Tasks id: " + res.scenario.celerytask);
+                getresult();
+              }
+              else{
+                console.log('Error:', res);
+                $('#msg').html("Error upload: " + res.errormsg);
+              }
+            },
+            error:  function(res) {
+                console.log('Error:', res);
+                $('#msg').html("Error upload: " + res);
+            }
+        });
+        return false;
+    });
+    </script>
+{%- endblock %}
+

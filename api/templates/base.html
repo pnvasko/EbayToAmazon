@@ -1,0 +1,28 @@
+{%- extends "bootstrap/base.html" %}
+{% block title %}API TEST BASE{% endblock %}
+{% import "bootstrap/fixes.html" as fixes %}
+
+{% block head %}
+    {{super()}}
+    {{fixes.ie8()}}
+{%- endblock %}
+
+{% block styles -%}
+    {{super()}}
+    <link href="https://cdn.datatables.net/1.10.12/css/dataTables.bootstrap.min.css" rel="stylesheet">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+{% endblock %}
+
+{% block navbar %}
+    <div class="navbar navbar-fixed-top"></div>
+{% endblock %}
+
+{% block content %}
+        <h1>API TEST BASE</h1>
+{% endblock %}
+{% block scripts %}
+    {{super()}}
+    <script type="text/javascript" src="https://code.jquery.com/ui/1.12.0/jquery-ui.min.js" ></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.12/js/dataTables.bootstrap.min.js"></script>
+{%- endblock scripts %}

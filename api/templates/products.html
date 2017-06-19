@@ -1,0 +1,32 @@
+{%- extends "base.html" %}
+{% block title %}API TEST{% endblock %}
+{% block content %}
+<div class="container bs-docs-container">
+    <div class="row">
+        <div class="col-lg-12">
+            <table class="table table-striped bg-white b-a">
+                <thead>
+                    <tr>
+                        <th>asin</th>
+                        <th>Title</th>
+                        <th>Status</th>
+                        <th>Error</th>
+                    </tr>
+                </thead>
+                <tbody id="testresult">
+                    {% for product in products %}
+                    <tr>
+                        <td><a href="http://vps405360.ovh.net:8000/{{product.asin}}.png">{{product.asin}}</a></td>
+                        <td>{{product.title}}</td>
+                        <td>{{product.status}}</td>
+                        <td>{{product.error}}</td>
+                    </tr>
+                    {%endfor%}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{%- endblock %}
+{% block scripts %}
+{%- endblock %}
